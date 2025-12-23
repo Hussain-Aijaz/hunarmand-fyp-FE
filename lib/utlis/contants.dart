@@ -3,6 +3,7 @@ import '../constants/colors.dart';
 
 class ApiConstants {
   // User API base URL (for auth, profile, user management)
+ // static const String userBaseUrl = 'http://10.0.2.2:8000/api/user/';
   static const String userBaseUrl = 'http://10.0.2.2:8000/api/user/';
 
   // Jobs API base URL

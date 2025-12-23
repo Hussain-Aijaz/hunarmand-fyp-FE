@@ -1378,7 +1378,7 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
 
   Widget _buildEmptyState() {
     return Container(
-      height: 200,
+      height: MediaQuery.of(context).size.height*0.5,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1435,6 +1435,226 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
     );
   }
 
+  // Widget _buildTaskItem(Task task, Job? job) {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => ProviderTaskDetailsScreen(task: task, job: job),
+  //         ),
+  //       );
+  //     },
+  //     child: Container(
+  //       margin: const EdgeInsets.only(bottom: 12),
+  //       padding: const EdgeInsets.all(16),
+  //       decoration: BoxDecoration(
+  //         color: AppColors.white,
+  //         borderRadius: BorderRadius.circular(8),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.black.withOpacity(0.1),
+  //             blurRadius: 4,
+  //             offset: const Offset(0, 2),
+  //           ),
+  //         ],
+  //       ),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           // Task Name and Status
+  //           Row(
+  //             children: [
+  //               Expanded(
+  //                 child: Text(
+  //                   task.taskName,
+  //                   style: const TextStyle(
+  //                     fontFamily: 'Plus Jakarta Sans',
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: 14,
+  //                     height: 1.0,
+  //                     letterSpacing: 0,
+  //                     color: AppColors.primaryBlue,
+  //                   ),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //                 decoration: BoxDecoration(
+  //                   color: const Color(0xFF0082B1).withOpacity(0.04),
+  //                   borderRadius: BorderRadius.circular(4),
+  //                 ),
+  //                 child: Text(
+  //                   task.status,
+  //                   style: const TextStyle(
+  //                     fontFamily: 'Plus Jakarta Sans',
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: 10,
+  //                     height: 1.0,
+  //                     letterSpacing: 0,
+  //                     color: AppColors.primaryBlue,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //
+  //           const SizedBox(height: 12),
+  //
+  //           // Description Heading
+  //           const Text(
+  //             'Description:',
+  //             style: TextStyle(
+  //               fontFamily: 'Plus Jakarta Sans',
+  //               fontWeight: FontWeight.w500,
+  //               fontSize: 12,
+  //               height: 1.0,
+  //               letterSpacing: 0,
+  //               color: AppColors.primaryBlue,
+  //             ),
+  //           ),
+  //
+  //           const SizedBox(height: 4),
+  //
+  //           // Description Text
+  //           Text(
+  //             task.description,
+  //             style: const TextStyle(
+  //               fontFamily: 'Plus Jakarta Sans',
+  //               fontWeight: FontWeight.w500,
+  //               fontSize: 10,
+  //               height: 1.3,
+  //               letterSpacing: 0,
+  //               color: Color(0xFF727272),
+  //             ),
+  //           ),
+  //
+  //           const SizedBox(height: 12),
+  //
+  //           // Stats Section
+  //           Container(
+  //             height: 1,
+  //             color: const Color(0xFFD7D7D7),
+  //           ),
+  //
+  //           const SizedBox(height: 12),
+  //
+  //           Row(
+  //             children: [
+  //               // No. of Bids
+  //               Expanded(
+  //                 child: Column(
+  //                   children: [
+  //                     const Text(
+  //                       'No. of Bids',
+  //                       style: TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w400,
+  //                         fontSize: 10,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: Color(0xFF727272),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 4),
+  //                     Text(
+  //                       task.noOfBids.toString(),
+  //                       style: const TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 11,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: AppColors.black,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //
+  //               // Vertical Divider
+  //               Container(
+  //                 width: 1,
+  //                 height: 30,
+  //                 color: const Color(0xFFD7D7D7),
+  //               ),
+  //
+  //               // Minimum Bid
+  //               Expanded(
+  //                 child: Column(
+  //                   children: [
+  //                     const Text(
+  //                       'Minimum Bid',
+  //                       style: TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w400,
+  //                         fontSize: 10,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: Color(0xFF727272),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 4),
+  //                     Text(
+  //                       task.minimumBid,
+  //                       style: const TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 11,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: AppColors.black,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //
+  //               // Vertical Divider
+  //               Container(
+  //                 width: 1,
+  //                 height: 30,
+  //                 color: const Color(0xFFD7D7D7),
+  //               ),
+  //
+  //               // Date
+  //               Expanded(
+  //                 child: Column(
+  //                   children: [
+  //                     const Text(
+  //                       'Posted Date',
+  //                       style: TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w400,
+  //                         fontSize: 10,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: Color(0xFF727272),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 4),
+  //                     Text(
+  //                       '${task.date.day}/${task.date.month}/${task.date.year}',
+  //                       style: const TextStyle(
+  //                         fontFamily: 'Plus Jakarta Sans',
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 11,
+  //                         height: 1.0,
+  //                         letterSpacing: 0,
+  //                         color: AppColors.black,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildTaskItem(Task task, Job? job) {
     return GestureDetector(
       onTap: () {
@@ -1462,22 +1682,26 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Task Name and Status
+            // Task ID and Status Row
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                    task.taskName,
-                    style: const TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      height: 1.0,
-                      letterSpacing: 0,
-                      color: AppColors.primaryBlue,
-                    ),
+                // Task ID
+                Text(
+                  '${task.taskID}',
+                  style: const TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: AppColors.primaryBlue,
                   ),
                 ),
+
+                const Spacer(),
+
+                // Status - centered vertically with Task ID
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -1497,6 +1721,21 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
                   ),
                 ),
               ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // Task Name (now with description style)
+            Text(
+              task.taskName,
+              style: const TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: FontWeight.w500,
+                fontSize: 10,
+                height: 1.3,
+                letterSpacing: 0,
+                color: Color(0xFF727272),
+              ),
             ),
 
             const SizedBox(height: 12),
