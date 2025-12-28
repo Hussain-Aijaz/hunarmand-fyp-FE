@@ -734,9 +734,9 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Task ID Section
-            _buildTaskIdSection(dialogWidth),
-
-            const SizedBox(height: 20),
+            // _buildTaskIdSection(dialogWidth),
+            //
+            // const SizedBox(height: 20),
 
             // Category and Priority Row
             _buildCategoryPriorityRow(dialogWidth),
@@ -1214,6 +1214,80 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
     );
   }
 
+  // Future<void> _placeRequest() async {
+  //   // Validate inputs
+  //   if (_selectedCategory == null) {
+  //     _showError('Please select Category');
+  //     return;
+  //   }
+  //   if (_selectedPriority == null) {
+  //     _showError('Please select Priority');
+  //     return;
+  //   }
+  //   if (_subjectController.text.isEmpty) {
+  //     _showError('Please enter Subject');
+  //     return;
+  //   }
+  //   if (_descriptionController.text.isEmpty) {
+  //     _showError('Please enter Description');
+  //     return;
+  //   }
+  //
+  //   setState(() {
+  //     _isSubmitting = true;
+  //     _errorMessage = null;
+  //     _successMessage = null;
+  //   });
+  //
+  //   try {
+  //     // Call API to create job
+  //     final response = await _jobCreationService.createJob(
+  //       taskId: widget.nextTaskId,
+  //       category: _selectedCategory!,
+  //       subject: _subjectController.text,
+  //       description: _descriptionController.text,
+  //       priority: _selectedPriority!,
+  //     );
+  //
+  //     if (mounted) {
+  //       setState(() {
+  //         _isSubmitting = false;
+  //         _successMessage = 'Task created successfully! ID: ${response['id']}';
+  //       });
+  //
+  //       // Create local task object
+  //       final newTask = Task(
+  //         taskID: widget.nextTaskId,
+  //         taskName: _subjectController.text,
+  //         status: 'Open',
+  //         description: _descriptionController.text,
+  //         noOfBids: 0,
+  //         minimumBid: '\$0',
+  //         date: DateTime.now(),
+  //         category: _selectedCategory!,
+  //         priority: _selectedPriority!,
+  //       );
+  //
+  //       // Call the callback to add task to parent list
+  //       widget.onTaskCreated(newTask);
+  //
+  //       // Close dialog after delay
+  //       Future.delayed(const Duration(seconds: 2), () {
+  //         if (mounted) {
+  //           Navigator.of(context).pop();
+  //         }
+  //       });
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isSubmitting = false;
+  //         _errorMessage = 'Failed to create task: ${e.toString().split('\n').first}';
+  //       });
+  //     }
+  //   }
+  // }
+
   Future<void> _placeRequest() async {
     // Validate inputs
     if (_selectedCategory == null) {
@@ -1250,16 +1324,11 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
       );
 
       if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-          _successMessage = 'Task created successfully! ID: ${response['id']}';
-        });
-
         // Create local task object
         final newTask = Task(
           taskID: widget.nextTaskId,
           taskName: _subjectController.text,
-          status: 'Open',
+          status: 'Waiting', // Set initial status as 'Waiting'
           description: _descriptionController.text,
           noOfBids: 0,
           minimumBid: '\$0',
@@ -1271,12 +1340,18 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
         // Call the callback to add task to parent list
         widget.onTaskCreated(newTask);
 
-        // Close dialog after delay
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            Navigator.of(context).pop();
-          }
+        // Show success message briefly and then close
+        setState(() {
+          _isSubmitting = false;
+          _successMessage = 'Task created successfully! ID: ${response['id']}';
         });
+
+        // Wait for 1.5 seconds to show success message, then close
+        await Future.delayed(const Duration(milliseconds: 1500));
+
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -1287,6 +1362,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
       }
     }
   }
+
 
   void _showError(String message) {
     setState(() {

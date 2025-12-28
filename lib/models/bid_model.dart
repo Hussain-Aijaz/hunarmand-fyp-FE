@@ -77,18 +77,23 @@ class CreateBidResponse {
   final Bid? bid;
   final String? message;
   final Map<String, dynamic>? errors;
+  final int? statusCode; // Add this
 
   CreateBidResponse({
     this.bid,
     this.message,
     this.errors,
+    this.statusCode, // Add this
   });
 
   factory CreateBidResponse.fromJson(Map<String, dynamic> json) {
     return CreateBidResponse(
-      bid: Bid.fromJson(json), // Direct JSON is the bid object
+      bid: json.containsKey('id') ? Bid.fromJson(json) : null, // Check if it's a bid
       message: json['message'],
       errors: json['errors'],
+      statusCode: json['statusCode'],
     );
   }
 }
+
+

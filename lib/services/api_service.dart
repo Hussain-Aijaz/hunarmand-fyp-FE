@@ -1,3 +1,6 @@
+
+
+
 // import 'dart:async';
 // import 'dart:convert';
 // import 'dart:io';
@@ -78,6 +81,40 @@
 //     }
 //   }
 //
+//   Future<http.Response> put({
+//     required String endpoint,
+//     required Map<String, dynamic> body,
+//   }) async {
+//     try {
+//       final url = Uri.parse('$baseUrl$endpoint');
+//       final isAuth = _isAuthEndpoint(endpoint);
+//       final headers = await _getHeaders(includeAuth: !isAuth);
+//
+//       print('🌐 PUT: $url');
+//       print('🔐 Auth: ${!isAuth}');
+//       print('📦 Body: $body');
+//
+//       final response = await http.put(
+//         url,
+//         headers: headers,
+//         body: jsonEncode(body),
+//       ).timeout(ApiConstants.receiveTimeout);
+//
+//       // Handle 401 only for non-auth endpoints
+//       if (response.statusCode == 401 && !isAuth) {
+//         await _handle401(endpoint, response.body);
+//       }
+//
+//       print('📥 PUT Response Status: ${response.statusCode}');
+//       print('📥 PUT Response Body: ${response.body}');
+//
+//       return response;
+//     } catch (e) {
+//       print('❌ PUT Error: $e');
+//       rethrow;
+//     }
+//   }
+//
 //   Future<Map<String, String>> _getHeaders({bool includeAuth = true}) async {
 //     final headers = {
 //       'Content-Type': 'application/json',
@@ -115,10 +152,7 @@
 //
 //     throw Exception('Unauthorized');
 //   }
-//
 // }
-
-
 
 
 import 'dart:async';
@@ -231,6 +265,38 @@ class ApiService {
       return response;
     } catch (e) {
       print('❌ PUT Error: $e');
+      rethrow;
+    }
+  }
+
+  // NEW: DELETE method
+  Future<http.Response> delete({
+    required String endpoint,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl$endpoint');
+      final isAuth = _isAuthEndpoint(endpoint);
+      final headers = await _getHeaders(includeAuth: !isAuth);
+
+      print('🌐 DELETE: $url');
+      print('🔐 Auth: ${!isAuth}');
+
+      final response = await http.delete(
+        url,
+        headers: headers,
+      ).timeout(ApiConstants.receiveTimeout);
+
+      // Handle 401 only for non-auth endpoints
+      if (response.statusCode == 401 && !isAuth) {
+        await _handle401(endpoint, response.body);
+      }
+
+      print('📥 DELETE Response Status: ${response.statusCode}');
+      print('📥 DELETE Response Body: ${response.body}');
+
+      return response;
+    } catch (e) {
+      print('❌ DELETE Error: $e');
       rethrow;
     }
   }

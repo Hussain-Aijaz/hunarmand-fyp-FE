@@ -28,13 +28,66 @@ class RegisterRequest {
   }
 }
 
+
+// class UserData {
+//   final String id;
+//   final String email;
+//   final String name;
+//   final String? phone;
+//   final String role; // Make sure this exists
+//   final String? avatar;
+//
+//   UserData({
+//     required this.id,
+//     required this.email,
+//     required this.name,
+//     this.phone,
+//     required this.role, // Required field
+//     this.avatar,
+//   });
+//
+//   factory UserData.fromJson(Map<String, dynamic> json) {
+//     return UserData(
+//       id: json['id'].toString(),
+//       email: json['email'],
+//       name: json['name'],
+//       phone: json['phone'],
+//       role: json['role'] ?? 'seeker', // Default to 'seeker' if not provided
+//       avatar: json['avatar'],
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'id': id,
+//       'email': email,
+//       'name': name,
+//       'phone': phone,
+//       'role': role,
+//       'avatar': avatar,
+//     };
+//   }
+//
+//   // Helper methods (optional)
+//   bool get isProvider => role.toLowerCase().contains('provider');
+//   bool get isSeeker => role.toLowerCase().contains('seeker');
+// }
+
 // Update UserData to include role
 class UserData {
   final String id;
   final String email;
   final String name;
   final String? phone;
-  final String role; // Make sure this exists
+  final String role;
+  final double? longitude;
+  final double? latitude;
+  final int startedJobs;
+  final int waitingJobs;
+  final int endedJobs;
+  final int totalBids;
+  final int approvedBids;
+  final int rejectedBids;
   final String? avatar;
 
   UserData({
@@ -42,17 +95,37 @@ class UserData {
     required this.email,
     required this.name,
     this.phone,
-    required this.role, // Required field
+    required this.role,
+    this.longitude,
+    this.latitude,
+    required this.startedJobs,
+    required this.waitingJobs,
+    required this.endedJobs,
+    required this.totalBids,
+    required this.approvedBids,
+    required this.rejectedBids,
     this.avatar,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
       id: json['id'].toString(),
-      email: json['email'],
-      name: json['name'],
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
       phone: json['phone'],
-      role: json['role'] ?? 'seeker', // Default to 'seeker' if not provided
+      role: json['role'] ?? 'seeker',
+      longitude: json['longitude'] != null
+          ? double.tryParse(json['longitude'].toString())
+          : null,
+      latitude: json['latitude'] != null
+          ? double.tryParse(json['latitude'].toString())
+          : null,
+      startedJobs: json['started_jobs'] ?? 0,
+      waitingJobs: json['waiting_jobs'] ?? 0,
+      endedJobs: json['ended_jobs'] ?? 0,
+      totalBids: json['total_bids'] ?? 0,
+      approvedBids: json['approved_bids'] ?? 0,
+      rejectedBids: json['rejected_bids'] ?? 0,
       avatar: json['avatar'],
     );
   }
@@ -64,6 +137,14 @@ class UserData {
       'name': name,
       'phone': phone,
       'role': role,
+      'longitude': longitude?.toString(),
+      'latitude': latitude?.toString(),
+      'started_jobs': startedJobs,
+      'waiting_jobs': waitingJobs,
+      'ended_jobs': endedJobs,
+      'total_bids': totalBids,
+      'approved_bids': approvedBids,
+      'rejected_bids': rejectedBids,
       'avatar': avatar,
     };
   }
@@ -71,6 +152,15 @@ class UserData {
   // Helper methods (optional)
   bool get isProvider => role.toLowerCase().contains('provider');
   bool get isSeeker => role.toLowerCase().contains('seeker');
+
+  // Calculate total jobs
+  int get totalJobs => startedJobs + waitingJobs + endedJobs;
+
+  // Calculate bid success rate
+  double get bidSuccessRate {
+    if (totalBids == 0) return 0.0;
+    return (approvedBids / totalBids) * 100;
+  }
 }
 
 class RegisterResponse {

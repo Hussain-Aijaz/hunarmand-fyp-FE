@@ -201,6 +201,38 @@ class AuthService {
   }
 
   // Rest of your methods stay the same...
+
+
+
+  // Future<UserData> getUserProfile() async {
+  //   print('👤 Fetching user profile...');
+  //
+  //   try {
+  //     final response = await _userApiService.get(
+  //       endpoint: 'profile/',
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final responseData = jsonDecode(response.body);
+  //       final userData = UserData.fromJson(responseData);
+  //       _currentUser = userData;
+  //
+  //       await _sharedPrefs.saveUserData(
+  //         userData.email,
+  //         userData.name,
+  //       );
+  //
+  //       print('✅ User profile loaded: ${userData.name}');
+  //       return userData;
+  //     } else {
+  //       throw Exception('Failed to fetch profile: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('💥 Profile fetch error: $e');
+  //     rethrow;
+  //   }
+  // }
+
   Future<UserData> getUserProfile() async {
     print('👤 Fetching user profile...');
 
@@ -217,9 +249,15 @@ class AuthService {
         await _sharedPrefs.saveUserData(
           userData.email,
           userData.name,
+          // You might want to add more fields to save
         );
 
         print('✅ User profile loaded: ${userData.name}');
+        print('📊 Additional data:');
+        print('   - Role: ${userData.role}');
+        print('   - Total Jobs: ${userData.totalJobs}');
+        print('   - Bid Success Rate: ${userData.bidSuccessRate.toStringAsFixed(2)}%');
+
         return userData;
       } else {
         throw Exception('Failed to fetch profile: ${response.statusCode}');
@@ -229,6 +267,7 @@ class AuthService {
       rethrow;
     }
   }
+
 
   Future<bool> isLoggedIn() async {
     final token = await _sharedPrefs.getAccessToken();

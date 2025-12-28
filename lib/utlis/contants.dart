@@ -4,15 +4,24 @@ import '../constants/colors.dart';
 class ApiConstants {
   // User API base URL (for auth, profile, user management)
  // static const String userBaseUrl = 'http://10.0.2.2:8000/api/user/';
-  static const String userBaseUrl = 'http://10.0.2.2:8000/api/user/';
 
+  static const String ipBaseUrl="http://10.0.2.2:8000/api";
+  //static const String ipBaseUrl="http://192.168.1.15:8000/api";
+
+  static const String userBaseUrl = '$ipBaseUrl/user/';
   // Jobs API base URL
-  static const String jobsBaseUrl = 'http://10.0.2.2:8000/api/v1/jobs/';
+ // static const String jobsBaseUrl = 'http://10.0.2.2:8000/api/v1/jobs/';
+  //static const String jobsBaseUrl = '$ipBaseUrl/v1/jobs/';
+  static const String generalBaseUrl = '$ipBaseUrl/v1/';
+
+  static const String bidBaseUrl = "";
+
 
   // Tasks API base URL (if you have one)
   // static const String tasksBaseUrl = 'http://10.0.2.2:8000/api/tasks/';
 
   // Auth endpoints
+  static const String jobsEndpoint = "jobs/";
   static const String registerEndpoint = 'registration/';
   static const String loginEndpoint = 'login/';
   static const String refreshTokenEndpoint = 'token/refresh/';

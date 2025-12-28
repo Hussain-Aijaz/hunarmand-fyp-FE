@@ -1,5 +1,7 @@
 // job_creation_service.dart
 import 'dart:convert';
+import 'package:hunarmand/utlis/contants.dart';
+
 import 'api_service.dart';
 
 class JobCreationService {
@@ -8,7 +10,7 @@ class JobCreationService {
   JobCreationService._internal();
 
   final ApiService _apiService = ApiService(
-    baseUrl: 'http://10.0.2.2:8000/api/v1/', // Adjust base URL as needed
+    baseUrl: ApiConstants.generalBaseUrl, // Adjust base URL as needed
   );
 
   Future<Map<String, dynamic>> createJob({
@@ -30,7 +32,7 @@ class JobCreationService {
         'category': category,
         'subject': subject,
         'description': description,
-        'status': 'None',
+        'status': 'Draft',
         'assigned_to': '',
         'priority': priority,
       };

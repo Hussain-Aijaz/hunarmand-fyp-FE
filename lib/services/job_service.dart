@@ -8,7 +8,7 @@ class JobService {
   factory JobService() => _instance;
   JobService._internal();
 
-  final ApiService _jobsApiService = ApiService(baseUrl: ApiConstants.jobsBaseUrl);
+  final ApiService _jobsApiService = ApiService(baseUrl: ApiConstants.generalBaseUrl + ApiConstants.jobsEndpoint);
 
   Future<List<Job>> getJobsList() async {
     try {

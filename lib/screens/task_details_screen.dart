@@ -822,7 +822,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   bool _isLoadingBids = false;
   bool _isProcessingBid = false;
   String? _errorMessage;
-  String? _successMessage;
   int? _processingBidId; // Track which bid is being processed
 
   @override
@@ -842,7 +841,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     setState(() {
       _isLoadingBids = true;
       _errorMessage = null;
-      _successMessage = null;
     });
 
     try {
@@ -884,7 +882,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       _isProcessingBid = true;
       _processingBidId = bid.id;
       _errorMessage = null;
-      _successMessage = null;
     });
 
     try {
@@ -905,13 +902,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         setState(() {
           _errorMessage = 'Failed to accept bid: $errorMsg';
         });
-      } else if (response.bid != null) {
-        // Success!
-        setState(() {
-          _successMessage = 'Bid #${bid.id} accepted successfully!';
-        });
 
-        // Refresh bids list to show updated status
+        // Show error snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Failed to accept bid: $errorMsg'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else if (response.bid != null) {
+        // Success! Refresh bids list to show updated status
         await _loadJobBids();
 
         // Show success snackbar
@@ -919,7 +920,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SnackBar(
             content: Text('✅ Bid #${bid.id} accepted successfully!'),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
           ),
         );
       } else {
@@ -959,7 +960,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       _isProcessingBid = true;
       _processingBidId = bid.id;
       _errorMessage = null;
-      _successMessage = null;
     });
 
     try {
@@ -980,13 +980,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         setState(() {
           _errorMessage = 'Failed to decline bid: $errorMsg';
         });
-      } else if (response.bid != null) {
-        // Success!
-        setState(() {
-          _successMessage = 'Bid #${bid.id} declined successfully!';
-        });
 
-        // Refresh bids list to show updated status
+        // Show error snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Failed to decline bid: $errorMsg'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else if (response.bid != null) {
+        // Success! Refresh bids list to show updated status
         await _loadJobBids();
 
         // Show success snackbar
@@ -994,7 +998,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SnackBar(
             content: Text('❌ Bid #${bid.id} declined successfully!'),
             backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
           ),
         );
       } else {
@@ -1030,7 +1034,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   void _clearMessages() {
     setState(() {
       _errorMessage = null;
-      _successMessage = null;
     });
   }
 
@@ -1062,9 +1065,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
               const SizedBox(height: 20),
 
-              // Success/Error Messages
-              if (_successMessage != null)
-                _buildMessageWidget(_successMessage!, false),
+              // Error Message
               if (_errorMessage != null)
                 _buildMessageWidget(_errorMessage!, true),
 
@@ -1122,7 +1123,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     );
   }
 
-  // Rest of the methods remain the same with minor updates...
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.white,
@@ -1494,14 +1494,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   }
 
   Widget _buildBidItem(Bid bid) {
-    final isAccepted = bid.status == 'Accepted';
+    final isAccepted = bid.status == 'Approved';
     final isDeclined = bid.status == 'Rejected' || bid.status == 'Declined';
     final isDraft = bid.status == 'Draft';
     final isProcessing = _processingBidId == bid.id && _isProcessingBid;
 
     Color statusColor;
     switch (bid.status.toLowerCase()) {
-      case 'accepted':
+      case 'approved':
         statusColor = const Color(0xFF00BB61);
         break;
       case 'rejected':
@@ -1710,62 +1710,75 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               ),
             ),
 
-          // Show status message if bid is already accepted/declined
+          // Show accepted badge in the middle (centered where buttons would be)
           if (isAccepted && !isProcessing)
             Container(
-              margin: const EdgeInsets.only(top: 8),
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              width: double.infinity,
+              height: 30,
               decoration: BoxDecoration(
                 color: const Color(0xFF00BB61).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: const Color(0xFF00BB61).withOpacity(0.3),
+                  width: 1,
+                ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.check_circle,
-                    size: 12,
-                    color: Color(0xFF00BB61),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    'Accepted',
-                    style: TextStyle(
-                      fontSize: 10,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      size: 14,
                       color: Color(0xFF00BB61),
-                      fontWeight: FontWeight.w600,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 6),
+                    const Text(
+                      'Accepted',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF00BB61),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
+          // Show rejected badge in the middle (centered where buttons would be)
           if (isDeclined && !isProcessing)
             Container(
-              margin: const EdgeInsets.only(top: 8),
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              width: double.infinity,
+              height: 30,
               decoration: BoxDecoration(
                 color: const Color(0xFFFF0000).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: const Color(0xFFFF0000).withOpacity(0.3),
+                  width: 1,
+                ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.cancel,
-                    size: 12,
-                    color: Color(0xFFFF0000),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    'Rejected',
-                    style: TextStyle(
-                      fontSize: 10,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.cancel,
+                      size: 14,
                       color: Color(0xFFFF0000),
-                      fontWeight: FontWeight.w600,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 6),
+                    const Text(
+                      'Rejected',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFFFF0000),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
         ],

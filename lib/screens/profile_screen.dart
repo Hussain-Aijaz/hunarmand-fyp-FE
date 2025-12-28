@@ -5,15 +5,23 @@ import '../constants/colors.dart';
 import '../providers/auth_provider.dart';
 import 'login_screen.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../constants/colors.dart';
+import '../providers/auth_provider.dart';
+import 'login_screen.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: const Color(0xFFFAFEFF),
       appBar: _buildAppBar(),
-      body: _buildBody(context),
+      body: _buildBody(context, authProvider),
     );
   }
 
@@ -34,15 +42,15 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, AuthProvider authProvider) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          const SizedBox(height: 40),
+         // const SizedBox(height: 30),
 
           // Profile Header
-          _buildProfileHeader(),
+          _buildProfileHeader(authProvider),
 
           const SizedBox(height: 40),
 
@@ -60,13 +68,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader() {
+  Widget _buildProfileHeader(AuthProvider authProvider) {
     return Column(
       children: [
         // Profile Image
         Container(
-          width: 67,
-          height: 67,
+          width: 70,
+          height: 70,
           decoration: BoxDecoration(
             color: AppColors.primaryBlue,
             borderRadius: BorderRadius.circular(33.5),
@@ -89,9 +97,9 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(height: 16),
 
         // Name
-        const Text(
-          'Anas Sar',
-          style: TextStyle(
+        Text(
+          authProvider.userName, // Use the getter from AuthProvider
+          style: const TextStyle(
             fontFamily: 'Plus Jakarta Sans',
             fontWeight: FontWeight.w500,
             fontSize: 22.48,
@@ -101,12 +109,12 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 4),
+        const SizedBox(height: 10),
 
-        // ID
-        const Text(
-          'ID: anassar',
-          style: TextStyle(
+        // ID (You can use user ID or phone as ID)
+        Text(
+          authProvider.userPhone.isNotEmpty ? authProvider.userPhone : 'N/A', // Show phone or 'N/A'
+          style: const TextStyle(
             fontFamily: 'Plus Jakarta Sans',
             fontWeight: FontWeight.w400,
             fontSize: 13.23,
@@ -115,36 +123,66 @@ class ProfileScreen extends StatelessWidget {
             color: Color(0xFF818181),
           ),
         ),
+        const SizedBox(height: 6),
+
+        // Email
+        Text(
+          authProvider.userEmail, // Use the getter from AuthProvider
+          style: const TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontWeight: FontWeight.w400,
+            fontSize: 13.23,
+            height: 1.0,
+            letterSpacing: 0,
+            color: Color(0xFF818181),
+          ),
+        ),
+
+        // Optional: Show Role
+        if (authProvider.currentUser?.role != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            'Role: ${authProvider.userRoleDisplayName}',
+            style: const TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              height: 1.0,
+              letterSpacing: 0,
+              color: AppColors.primaryBlue,
+            ),
+          ),
+        ],
       ],
     );
   }
 
   Widget _buildProfileCards(BuildContext context) {
     final List<ProfileItem> profileItems = [
-      ProfileItem(
-        label: 'Security',
-        svgIcon: 'assets/securitySVG.svg',
-      ),
+      // ProfileItem(
+      //   label: 'Security',
+      //   svgIcon: 'assets/securitySVG.svg',
+      // ),
       ProfileItem(
         label: 'Change Password',
         svgIcon: 'assets/changePassword.svg',
       ),
-      ProfileItem(
-        label: 'Change Language',
-        svgIcon: 'assets/changeLanguage.svg',
-      ),
-      ProfileItem(
-        label: 'Order History',
-        svgIcon: 'assets/orderHistory.svg',
-      ),
-      ProfileItem(
-        label: 'Order Review',
-        svgIcon: 'assets/orderHistory.svg',
-      ),
-      ProfileItem(
-        label: 'Contact Detail',
-        svgIcon: 'assets/contactDetails.svg',
-      ),
+      // ProfileItem(
+      //   label: 'Change Language',
+      //   svgIcon: 'assets/changeLanguage.svg',
+      // ),
+      // ProfileItem(
+      //   label: 'Order History',
+      //   svgIcon: 'assets/orderHistory.svg',
+      // ),
+      // ProfileItem(
+      //   label: 'Order Review',
+      //   svgIcon: 'assets/orderHistory.svg',
+      // ),
+      // ProfileItem(
+      //   label: 'Contact Detail',
+      //   svgIcon: 'assets/contactDetails.svg',
+      // ),
       ProfileItem(
         label: 'Log Out',
         svgIcon: 'assets/logoutIcon.svg',
@@ -289,67 +327,15 @@ class ProfileScreen extends StatelessWidget {
         break;
       case 'Log Out':
         _logout(context);
-        //_showLogoutDialog(context);
         break;
     }
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          title: const Text(
-            'Log Out',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-          ),
-          content: const Text(
-            'Are you sure you want to log out?',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: AppColors.primaryBlue,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _performLogout(context);
-              },
-              child: const Text(
-                'Log Out',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   // Simple logout function
   Future<void> _logout(BuildContext context) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    // Simple confirmation dialog (optional)
+    // Simple confirmation dialog
     final confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -379,23 +365,6 @@ class ProfileScreen extends StatelessWidget {
             (route) => false, // Remove all previous routes
       );
     }
-  }
-
-
-  void _performLogout(BuildContext context) {
-    print('User logged out');
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/login',
-          (route) => false,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Logged out successfully'),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 }
 

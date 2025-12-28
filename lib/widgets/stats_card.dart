@@ -21,7 +21,7 @@ class StatsCard extends StatelessWidget {
     final cardColor = color ?? AppColors.primaryBlue;
     return Container(
       width: 167,
-      height: 91,
+      height: 90,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(8.42),
@@ -70,26 +70,26 @@ class StatsCard extends StatelessWidget {
           ),
 
           // Top Right Button
-          Positioned(
-            top: 12,
-            right: 12,
-            child: GestureDetector(
-              onTap: () {
-                print('My Works card forward button pressed');
-              },
-              child: Container(
-
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/cardFrowardSvg.svg',
-                    width: 21.7,
-                    height: 21.26,
-
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: 12,
+          //   right: 12,
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       print('My Works card forward button pressed');
+          //     },
+          //     child: Container(
+          //
+          //       child: Center(
+          //         child: SvgPicture.asset(
+          //           'assets/cardFrowardSvg.svg',
+          //           width: 21.7,
+          //           height: 21.26,
+          //
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

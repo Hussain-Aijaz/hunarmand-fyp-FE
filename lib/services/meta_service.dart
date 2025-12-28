@@ -1,5 +1,7 @@
 // meta_service.dart
 import 'dart:convert';
+import 'package:hunarmand/utlis/contants.dart';
+
 import 'api_service.dart';
 
 class MetaService {
@@ -8,7 +10,7 @@ class MetaService {
   MetaService._internal();
 
   final ApiService _apiService = ApiService(
-    baseUrl: 'http://10.0.2.2:8000/api/v1/', // Adjust base URL as needed
+    baseUrl: ApiConstants.generalBaseUrl, // Adjust base URL as needed
   );
 
   Future<Map<String, dynamic>> getEnums() async {
