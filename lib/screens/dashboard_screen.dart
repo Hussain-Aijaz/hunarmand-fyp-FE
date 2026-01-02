@@ -413,6 +413,512 @@
 // }
 
 
+
+
+
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:provider/provider.dart';
+// import 'package:hunarmand/screens/profile_screen.dart';
+// import '../constants/colors.dart';
+// import '../models/auth_model.dart';
+// import '../widgets/stats_card.dart';
+// import 'active_tasks_screen.dart';
+// import 'provider_tasks_screen.dart';
+// import '../providers/auth_provider.dart';
+//
+// class DashboardScreen extends StatelessWidget {
+//   const DashboardScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final authProvider = Provider.of<AuthProvider>(context);
+//     final bool isProvider = authProvider.isProvider;
+//     final String userName = authProvider.currentUser?.name ?? 'User';
+//     final UserData? userData = authProvider.currentUser;
+//
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFFAFEFF),
+//       appBar: _buildAppBar(context, userName, isProvider, authProvider),
+//       body: _buildBody(context, isProvider, userName, userData),
+//     );
+//   }
+//
+//   AppBar _buildAppBar(BuildContext context, String userName, bool isProvider, AuthProvider authProvider) {
+//     return AppBar(
+//       backgroundColor: AppColors.white,
+//       elevation: 0,
+//       leading: Padding(
+//         padding: const EdgeInsets.only(left: 16),
+//         child: GestureDetector(
+//           onTap: () {
+//             Navigator.push(
+//               context,
+//               MaterialPageRoute(builder: (context) => const ProfileScreen()),
+//             );
+//           },
+//           child: CircleAvatar(
+//             radius: 14.5,
+//             backgroundColor: Colors.grey[300],
+//             child: ClipOval(
+//               child: SvgPicture.asset(
+//                 'assets/profileSvg.svg',
+//                 width: 29,
+//                 height: 28.41,
+//                 fit: BoxFit.cover,
+//                 placeholderBuilder: (BuildContext context) => Container(
+//                   width: 29,
+//                   height: 28.41,
+//                   color: AppColors.primaryBlue,
+//                   child: const Icon(Icons.person, color: AppColors.white, size: 16),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//       title: Container(
+//         margin: const EdgeInsets.only(left: 0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const Text(
+//               'WELCOME TO HUNARMAND',
+//               style: TextStyle(
+//                 fontFamily: 'Plus Jakarta Sans',
+//                 fontWeight: FontWeight.w700,
+//                 fontSize: 14,
+//                 height: 1.25,
+//                 color: AppColors.black,
+//               ),
+//             ),
+//             Container(
+//               margin: const EdgeInsets.only(top: 2),
+//               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+//               decoration: BoxDecoration(
+//                 color: isProvider
+//                     ? AppColors.primaryGreen.withOpacity(0.1)
+//                     : AppColors.primaryBlue.withOpacity(0.1),
+//                 borderRadius: BorderRadius.circular(4),
+//               ),
+//               child: Text(
+//                 authProvider.userRoleDisplayName,
+//                 style: TextStyle(
+//                   fontSize: 7,
+//                   fontWeight: FontWeight.w600,
+//                   color: isProvider ? AppColors.primaryGreen : AppColors.primaryBlue,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       centerTitle: false,
+//     );
+//   }
+//
+//   Widget _buildBody(BuildContext context, bool isProvider, String userName, UserData? userData) {
+//     // Calculate bid received for seekers (approved + rejected)
+//     final int bidReceived = (userData?.approvedBids ?? 0) + (userData?.rejectedBids ?? 0);
+//
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.all(16),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // Greeting section
+//           _buildGreetingSection(isProvider, userName),
+//
+//           const SizedBox(height: 15),
+//           _buildRecentActivitiesSection(context, isProvider),
+//
+//           const SizedBox(height: 20),
+//           _buildMyWorksCard(isProvider, context, userData),
+//
+//           const SizedBox(height: 16),
+//           const Text(
+//             'Summary',
+//             style: TextStyle(
+//               fontFamily: 'Plus Jakarta Sans',
+//               fontWeight: FontWeight.w500,
+//               fontSize: 16.93,
+//               color: AppColors.black,
+//             ),
+//           ),
+//
+//           const SizedBox(height: 16),
+//           // Show different stats based on user role
+//           isProvider
+//               ? _buildProviderStats(userData)
+//               : _buildSeekerStats(userData, bidReceived),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildGreetingSection(bool isProvider, String userName) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text(
+//           isProvider ? 'Welcome, $userName!' : 'Hello, $userName!',
+//           style: const TextStyle(
+//             fontSize: 16,
+//             fontWeight: FontWeight.w500,
+//             color: AppColors.textGray,
+//           ),
+//         ),
+//         const SizedBox(height: 4),
+//         Text(
+//           isProvider ? 'Service Provider Dashboard' : 'Service Seeker Dashboard',
+//           style: const TextStyle(
+//             fontSize: 12,
+//             fontWeight: FontWeight.w400,
+//             color: AppColors.textGray,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildRecentActivitiesSection(BuildContext context, bool isProvider) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Text(
+//           isProvider ? 'Recent Tasks' : 'Recent Activities',
+//           style: const TextStyle(
+//             fontFamily: 'Plus Jakarta Sans',
+//             fontWeight: FontWeight.w500,
+//             fontSize: 16.93,
+//             color: AppColors.black,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildProviderStats(UserData? userData) {
+//     return Column(
+//       children: [
+//         // First Row: Started Jobs and Ended Jobs
+//         Row(
+//           children: [
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.startedJobs?.toString() ?? '0'),
+//                 title: 'Started Jobs',
+//                 onButtonPressed: () {
+//                   print('Started Jobs pressed');
+//                 },
+//               ),
+//             ),
+//             const SizedBox(width: 16),
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.endedJobs?.toString() ?? '0'),
+//                 title: 'Ended Jobs',
+//                 onButtonPressed: () {
+//                   print('Ended Jobs pressed');
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         const SizedBox(height: 16),
+//
+//         // Second Row: Approved Bids and Rejected Bids
+//         Row(
+//           children: [
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.approvedBids?.toString() ?? '0'),
+//                 title: 'Approved Bids',
+//                 onButtonPressed: () {
+//                   print('Approved Bids pressed');
+//                 },
+//               ),
+//             ),
+//             const SizedBox(width: 16),
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.rejectedBids?.toString() ?? '0'),
+//                 title: 'Rejected Bids',
+//                 onButtonPressed: () {
+//                   print('Rejected Bids pressed');
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         // const SizedBox(height: 16),
+//         //
+//         // // Third Row: Total Bids and Waiting Jobs (optional)
+//         // Row(
+//         //   children: [
+//         //     Expanded(
+//         //       child: StatsCard(
+//         //         count: (userData?.totalBids?.toString() ?? '0'),
+//         //         title: 'Total Bids',
+//         //         onButtonPressed: () {
+//         //           print('Total Bids pressed');
+//         //         },
+//         //       ),
+//         //     ),
+//         //     const SizedBox(width: 16),
+//         //     Expanded(
+//         //       child: StatsCard(
+//         //         count: (userData?.waitingJobs?.toString() ?? '0'),
+//         //         title: 'Waiting Jobs',
+//         //         onButtonPressed: () {
+//         //           print('Waiting Jobs pressed');
+//         //         },
+//         //       ),
+//         //     ),
+//         //   ],
+//         // ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildSeekerStats(UserData? userData, int bidReceived) {
+//     return Column(
+//       children: [
+//         // First Row: Started and Ended
+//         Row(
+//           children: [
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.startedJobs?.toString() ?? '0'),
+//                 title: 'Started',
+//                 onButtonPressed: () {
+//                   print('Started Jobs pressed');
+//                 },
+//               ),
+//             ),
+//             const SizedBox(width: 16),
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.endedJobs?.toString() ?? '0'),
+//                 title: 'Ended',
+//                 onButtonPressed: () {
+//                   print('Ended Jobs pressed');
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         const SizedBox(height: 16),
+//
+//         // Second Row: Waiting and Bids Received
+//         Row(
+//           children: [
+//             Expanded(
+//               child: StatsCard(
+//                 count: (userData?.waitingJobs?.toString() ?? '0'),
+//                 title: 'Waiting',
+//                 onButtonPressed: () {
+//                   print('Waiting Jobs pressed');
+//                 },
+//               ),
+//             ),
+//             const SizedBox(width: 16),
+//             Expanded(
+//               child: StatsCard(
+//                 count: bidReceived.toString(),
+//                 title: 'Bids Received',
+//                 onButtonPressed: () {
+//                   print('Bids Received pressed');
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//
+//         // const SizedBox(height: 16),
+//         //
+//         // // Third Row: Total Jobs (optional)
+//         // Row(
+//         //   children: [
+//         //     Expanded(
+//         //       child: StatsCard(
+//         //         count: ((userData?.startedJobs ?? 0) +
+//         //             (userData?.waitingJobs ?? 0) +
+//         //             (userData?.endedJobs ?? 0)).toString(),
+//         //         title: 'Total Jobs',
+//         //         onButtonPressed: () {
+//         //           print('Total Jobs pressed');
+//         //         },
+//         //       ),
+//         //     ),
+//         //     const SizedBox(width: 16),
+//         //     Expanded(
+//         //       child: StatsCard(
+//         //         count: (userData?.totalBids?.toString() ?? '0'),
+//         //         title: 'Total Bids',
+//         //         onButtonPressed: () {
+//         //           print('Total Bids pressed');
+//         //         },
+//         //       ),
+//         //     ),
+//         //   ],
+//         // ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildMyWorksCard(bool isProvider, BuildContext context, UserData? userData) {
+//     final int totalCount = isProvider
+//         ? (userData?.totalBids ?? 0)
+//         : ((userData?.startedJobs ?? 0) + (userData?.waitingJobs ?? 0) + (userData?.endedJobs ?? 0));
+//
+//     return GestureDetector(
+//       onTap: () {
+//         if (isProvider) {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(builder: (context) => const ProviderTasksScreen()),
+//           );
+//         } else {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(builder: (context) => const ActiveTasksScreen()),
+//           );
+//         }
+//       },
+//       child: Container(
+//         width: double.infinity,
+//         height: 120,
+//         decoration: BoxDecoration(
+//           color: AppColors.white,
+//           borderRadius: BorderRadius.circular(12),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.black.withOpacity(0.1),
+//               blurRadius: 8,
+//               offset: const Offset(0, 2),
+//             ),
+//           ],
+//         ),
+//         child: Stack(
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: Row(
+//                 crossAxisAlignment: CrossAxisAlignment.end,
+//                 children: [
+//                   Expanded(
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       mainAxisAlignment: MainAxisAlignment.end,
+//                       children: [
+//                         SvgPicture.asset(
+//                           'assets/taskIconSvg.svg',
+//                           width: 22.89,
+//                           height: 26.67,
+//                           placeholderBuilder: (BuildContext context) => Icon(
+//                             Icons.work_outline,
+//                             size: 26,
+//                             color: AppColors.primaryBlue,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 12),
+//                         Text(
+//                           isProvider ? 'My Jobs' : 'My Jobs',
+//                           style: const TextStyle(
+//                             fontFamily: 'Plus Jakarta Sans',
+//                             fontWeight: FontWeight.w500,
+//                             fontSize: 18,
+//                             color: AppColors.black,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 4),
+//                         Text(
+//                           isProvider ? 'Manage your bids' : 'Track your jobs',
+//                           style: const TextStyle(
+//                             fontFamily: 'Plus Jakarta Sans',
+//                             fontWeight: FontWeight.w400,
+//                             fontSize: 12.63,
+//                             color: Color(0xFF8B8B8B),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   const SizedBox(width: 16),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.end,
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     children: [
+//                       Text(
+//                         totalCount.toString(),
+//                         style: const TextStyle(
+//                           fontFamily: 'Plus Jakarta Sans',
+//                           fontWeight: FontWeight.w500,
+//                           fontSize: 12.63,
+//                           color: AppColors.black,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 4),
+//                       Text(
+//                         isProvider ? 'Bids' : 'Jobs',
+//                         style: const TextStyle(
+//                           fontFamily: 'Plus Jakarta Sans',
+//                           fontWeight: FontWeight.w400,
+//                           fontSize: 12.63,
+//                           color: Color(0xFF8B8B8B),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Positioned(
+//               top: 12,
+//               right: 12,
+//               child: GestureDetector(
+//                 onTap: () {
+//                   if (isProvider) {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => const ProviderTasksScreen()),
+//                     );
+//                   } else {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => const ActiveTasksScreen()),
+//                     );
+//                   }
+//                 },
+//                 child: Container(
+//                   child: Center(
+//                     child: SvgPicture.asset(
+//                       'assets/cardFrowardSvg.svg',
+//                       width: 21.7,
+//                       height: 21.26,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -429,88 +935,210 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final bool isProvider = authProvider.isProvider;
-    final String userName = authProvider.currentUser?.name ?? 'User';
-    final UserData? userData = authProvider.currentUser;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFAFEFF),
-      appBar: _buildAppBar(context, userName, isProvider, authProvider),
-      body: _buildBody(context, isProvider, userName, userData),
+      body: SafeArea(
+        child: Consumer<AuthProvider>(
+          builder: (context, authProvider, child) {
+            // Show loading state if profile is being loaded and we have no user data
+            if (authProvider.isProfileLoading && authProvider.currentUser == null) {
+              return _buildLoadingState();
+            }
+
+            // Show empty state if no user data after loading
+            if (authProvider.currentUser == null) {
+              return _buildEmptyState(authProvider);
+            }
+
+            return _DashboardContent(authProvider: authProvider);
+          },
+        ),
+      ),
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, String userName, bool isProvider, AuthProvider authProvider) {
-    return AppBar(
-      backgroundColor: AppColors.white,
-      elevation: 0,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-            );
-          },
-          child: CircleAvatar(
-            radius: 14.5,
-            backgroundColor: Colors.grey[300],
-            child: ClipOval(
-              child: SvgPicture.asset(
-                'assets/profileSvg.svg',
-                width: 29,
-                height: 28.41,
-                fit: BoxFit.cover,
-                placeholderBuilder: (BuildContext context) => Container(
-                  width: 29,
-                  height: 28.41,
-                  color: AppColors.primaryBlue,
-                  child: const Icon(Icons.person, color: AppColors.white, size: 16),
-                ),
-              ),
+  static Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 40,
+            height: 40,
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
             ),
           ),
-        ),
+          const SizedBox(height: 16),
+          const Text(
+            'Loading dashboard...',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
+        ],
       ),
-      title: Container(
-        margin: const EdgeInsets.only(left: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'WELCOME TO HUNARMAND',
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                height: 1.25,
-                color: AppColors.black,
+    );
+  }
+
+  static Widget _buildEmptyState(AuthProvider authProvider) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.person_outline, size: 64, color: Colors.grey),
+          const SizedBox(height: 16),
+          const Text(
+            'No user data available',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () => authProvider.refreshUserProfile(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryBlue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 2),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-              decoration: BoxDecoration(
-                color: isProvider
-                    ? AppColors.primaryGreen.withOpacity(0.1)
-                    : AppColors.primaryBlue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                authProvider.userRoleDisplayName,
-                style: TextStyle(
-                  fontSize: 7,
-                  fontWeight: FontWeight.w600,
-                  color: isProvider ? AppColors.primaryGreen : AppColors.primaryBlue,
+            child: const Text(
+              'Retry',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashboardContent extends StatefulWidget {
+  final AuthProvider authProvider;
+
+  const _DashboardContent({required this.authProvider});
+
+  @override
+  State<_DashboardContent> createState() => _DashboardContentState();
+}
+
+class _DashboardContentState extends State<_DashboardContent> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  GlobalKey<RefreshIndicatorState>();
+
+  Future<void> _refreshData() async {
+    print('🔄 Dashboard manual refresh');
+    await widget.authProvider.refreshUserProfile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isProvider = widget.authProvider.isProvider;
+    final userName = widget.authProvider.currentUser?.name ?? 'User';
+    final userData = widget.authProvider.currentUser;
+
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _refreshData,
+      color: AppColors.primaryBlue,
+      backgroundColor: AppColors.white,
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            floating: true,
+            pinned: false,
+            snap: false,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 14.5,
+                  backgroundColor: Colors.grey[300],
+                  child: ClipOval(
+                    child: SvgPicture.asset(
+                      'assets/profileSvg.svg',
+                      width: 29,
+                      height: 28.41,
+                      fit: BoxFit.cover,
+                      placeholderBuilder: (BuildContext context) => Container(
+                        width: 29,
+                        height: 28.41,
+                        color: AppColors.primaryBlue,
+                        child: const Icon(Icons.person, color: AppColors.white, size: 16),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ],
-        ),
+            title: Container(
+              margin: const EdgeInsets.only(left: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'WELCOME TO HUNARMAND',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      height: 1.25,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: isProvider
+                          ? AppColors.primaryGreen.withOpacity(0.1)
+                          : AppColors.primaryBlue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      widget.authProvider.userRoleDisplayName,
+                      style: TextStyle(
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
+                        color: isProvider ? AppColors.primaryGreen : AppColors.primaryBlue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            centerTitle: false,
+            actions: [
+              // Refresh button
+              IconButton(
+                onPressed: _refreshData,
+                icon: Icon(
+                  Icons.refresh,
+                  color: AppColors.primaryBlue,
+                ),
+                tooltip: 'Refresh',
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: _buildBody(context, isProvider, userName, userData),
+          ),
+        ],
       ),
-      centerTitle: false,
     );
   }
 
@@ -518,7 +1146,7 @@ class DashboardScreen extends StatelessWidget {
     // Calculate bid received for seekers (approved + rejected)
     final int bidReceived = (userData?.approvedBids ?? 0) + (userData?.rejectedBids ?? 0);
 
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -649,33 +1277,6 @@ class DashboardScreen extends StatelessWidget {
             ),
           ],
         ),
-
-        // const SizedBox(height: 16),
-        //
-        // // Third Row: Total Bids and Waiting Jobs (optional)
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child: StatsCard(
-        //         count: (userData?.totalBids?.toString() ?? '0'),
-        //         title: 'Total Bids',
-        //         onButtonPressed: () {
-        //           print('Total Bids pressed');
-        //         },
-        //       ),
-        //     ),
-        //     const SizedBox(width: 16),
-        //     Expanded(
-        //       child: StatsCard(
-        //         count: (userData?.waitingJobs?.toString() ?? '0'),
-        //         title: 'Waiting Jobs',
-        //         onButtonPressed: () {
-        //           print('Waiting Jobs pressed');
-        //         },
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -683,7 +1284,34 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildSeekerStats(UserData? userData, int bidReceived) {
     return Column(
       children: [
-        // First Row: Started and Ended
+        // First Row: Waiting and Bids Received
+        Row(
+          children: [
+            Expanded(
+              child: StatsCard(
+                count: (userData?.waitingJobs?.toString() ?? '0'),
+                title: 'Waiting',
+                onButtonPressed: () {
+                  print('Waiting Jobs pressed');
+                },
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: StatsCard(
+                count: (userData?.totalBids?.toString() ?? '0'),
+                title: 'Bids Received',
+                onButtonPressed: () {
+                  print('Bids Received pressed');
+                },
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // Second Row: Started and Ended
         Row(
           children: [
             Expanded(
@@ -707,62 +1335,6 @@ class DashboardScreen extends StatelessWidget {
             ),
           ],
         ),
-
-        const SizedBox(height: 16),
-
-        // Second Row: Waiting and Bids Received
-        Row(
-          children: [
-            Expanded(
-              child: StatsCard(
-                count: (userData?.waitingJobs?.toString() ?? '0'),
-                title: 'Waiting',
-                onButtonPressed: () {
-                  print('Waiting Jobs pressed');
-                },
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: StatsCard(
-                count: bidReceived.toString(),
-                title: 'Bids Received',
-                onButtonPressed: () {
-                  print('Bids Received pressed');
-                },
-              ),
-            ),
-          ],
-        ),
-
-        // const SizedBox(height: 16),
-        //
-        // // Third Row: Total Jobs (optional)
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child: StatsCard(
-        //         count: ((userData?.startedJobs ?? 0) +
-        //             (userData?.waitingJobs ?? 0) +
-        //             (userData?.endedJobs ?? 0)).toString(),
-        //         title: 'Total Jobs',
-        //         onButtonPressed: () {
-        //           print('Total Jobs pressed');
-        //         },
-        //       ),
-        //     ),
-        //     const SizedBox(width: 16),
-        //     Expanded(
-        //       child: StatsCard(
-        //         count: (userData?.totalBids?.toString() ?? '0'),
-        //         title: 'Total Bids',
-        //         onButtonPressed: () {
-        //           print('Total Bids pressed');
-        //         },
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -846,31 +1418,31 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        totalCount.toString(),
-                        style: const TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12.63,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        isProvider ? 'Bids' : 'Jobs',
-                        style: const TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.63,
-                          color: Color(0xFF8B8B8B),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.end,
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     Text(
+                  //       totalCount.toString(),
+                  //       style: const TextStyle(
+                  //         fontFamily: 'Plus Jakarta Sans',
+                  //         fontWeight: FontWeight.w500,
+                  //         fontSize: 12.63,
+                  //         color: AppColors.black,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(height: 4),
+                  //     Text(
+                  //       isProvider ? 'Bids' : 'Jobs',
+                  //       style: const TextStyle(
+                  //         fontFamily: 'Plus Jakarta Sans',
+                  //         fontWeight: FontWeight.w400,
+                  //         fontSize: 12.63,
+                  //         color: Color(0xFF8B8B8B),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

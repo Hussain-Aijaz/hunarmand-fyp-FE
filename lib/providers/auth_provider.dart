@@ -16,6 +16,11 @@ class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
   UserData? _currentUser;
 
+  bool _hasInitialized = false;
+
+  bool _isProfileLoading = false;
+  bool get isProfileLoading => _isProfileLoading;
+
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   RegisterResponse? get registerResponse => _registerResponse;
@@ -40,13 +45,22 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _checkLoginStatus() async {
+
+    if (_hasInitialized) {
+      print('⚠️ Already initialized, skipping _checkLoginStatus');
+      return;
+    }
+
+    _hasInitialized = true;
+
+
     try {
       _isLoggedIn = await _authService.isLoggedIn();
       print('🔍 Initial login status: $_isLoggedIn');
 
       if (_isLoggedIn) {
         // Try to load user profile if logged in
-        await _loadUserProfile();
+        await _loadUserProfile(notify: false);
       }
     } catch (e) {
       print('⚠️ Error checking login status: $e');
@@ -218,8 +232,8 @@ class AuthProvider with ChangeNotifier {
     // Update login status
     _isLoggedIn = true;
 
-    // Load user profile
-    await _loadUserProfile();
+    // Load user profile with notification
+    await _loadUserProfile(notify: true);
 
     _setError(null);
     print('🎯 Login complete with profile data');
@@ -283,7 +297,13 @@ class AuthProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> _loadUserProfile() async {
+  Future<void> _loadUserProfile({bool notify = true}) async {
+    if (_isProfileLoading) {
+      print('⚠️ Profile already loading, skipping');
+      return;
+    }
+
+    _isProfileLoading = true;
     print('👤 Loading user profile...');
 
     try {
@@ -308,15 +328,20 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       print('⚠️ Profile fetch failed: $e');
 
-      // Don't logout on profile fetch failure, just keep user logged in without profile
-      // They can still use basic features
       if (e.toString().contains('401') || e.toString().contains('Unauthorized')) {
         print('🔐 401 during profile fetch - logging out');
         await logoutUser();
       }
+    } finally {
+      _isProfileLoading = false;
+      if (notify) {
+        print('📢 Notifying listeners after profile load');
+        notifyListeners();
+      } else {
+        print('📴 Not notifying listeners (silent load)');
+      }
     }
   }
-
 
   void _handleLoginError(dynamic e, StackTrace stackTrace) {
     print('💥 Exception in AuthProvider.loginUser():');
@@ -377,12 +402,32 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Load user profile on demand
+  // Update loadUserProfile method
   Future<void> loadUserProfile() async {
-    if (_isLoggedIn) {
-      await _loadUserProfile();
-      notifyListeners();
+    print('🔄 loadUserProfile() called');
+
+    if (!_isLoggedIn) {
+      print('⚠️ Not logged in, skipping profile fetch');
+      return;
     }
+
+    if (_isProfileLoading) {
+      print('⚠️ Profile already loading, skipping');
+      return;
+    }
+
+    await _loadUserProfile(notify: true);
+  }
+
+  Future<void> refreshUserProfile() async {
+    print('🔄 refreshUserProfile() called');
+
+    if (!_isLoggedIn) {
+      print('⚠️ Not logged in, skipping refresh');
+      return;
+    }
+
+    await _loadUserProfile(notify: true);
   }
 
   void clearError() {
