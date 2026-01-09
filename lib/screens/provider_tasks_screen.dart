@@ -1193,6 +1193,18 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
     _loadJobs();
   }
 
+  @override
+  void didPush() {
+    _loadJobs();
+  }
+
+  // Called when the route is popped off the navigator
+  @override
+  void didPopNext() {
+    // Called when the next route is popped and this route becomes visible again
+    _loadJobs();
+  }
+
   Future<void> _loadJobs() async {
     setState(() {
       _isLoading = true;
@@ -1302,7 +1314,7 @@ class _ProviderTasksScreenState extends State<ProviderTasksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFEFF),
+      backgroundColor:  const Color(0xFFFAFEFF),
       appBar: _buildAppBar(),
       body: RefreshIndicator(
         onRefresh: _refreshJobs,
